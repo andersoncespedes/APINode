@@ -1,12 +1,7 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from 'express';
+import { ShowClients } from "../Handlers/ClienteHandler";
 const ClienteRoute = Router();
-ClienteRoute.get("/", (request : Request, response : Response) : Response =>{
-    return response.status(StatusCodes.OK).send(
-        {
-            success:true
-        }
-    )
-});
+ClienteRoute.get("/",  ShowClients);
 export {ClienteRoute};
