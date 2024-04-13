@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { UserRoute } from "./UserRoute";
+import { ProductosRoute } from "./ProductoRoute";
+import { ClienteRoute } from "./ClienteRoute";
 const Route : Router = Router();
-Route.use("/User",UserRoute);
+Route.use("/Producto",ProductosRoute);
+Route.use("/Cliente",ClienteRoute);
+
 export default Route;

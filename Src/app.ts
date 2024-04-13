@@ -12,13 +12,15 @@ if (!process.env.PORT) {
 }
 const port = 8080;
 const app = express();
-app.use("/", Route);
+
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-app.use(morgan('dev'));
+
 app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
+app.use(morgan('dev'));
 
+app.use("/", Route);
 app.use((req : Request, res : Response, next : NextFunction) : void => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -26,6 +28,5 @@ app.use((req : Request, res : Response, next : NextFunction) : void => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
   });
-app.use(express.urlencoded({extended : true}));
 app.use(helmet());
 export {app};

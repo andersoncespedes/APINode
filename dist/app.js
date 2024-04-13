@@ -16,11 +16,11 @@ if (!process.env.PORT) {
 const port = 8080;
 const app = (0, express_1.default)();
 exports.app = app;
-app.use("/", IndexRoute_1.default);
 app.use(cookieParser());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('dev'));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use("/", IndexRoute_1.default);
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -28,5 +28,4 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
 });
-app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, helmet_1.default)());
