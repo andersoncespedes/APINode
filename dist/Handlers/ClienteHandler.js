@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ShowClients = void 0;
+exports.ShowOne = exports.ShowClients = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const ClienteController_1 = require("../Controllers/ClienteController");
 function ShowClients(request, response) {
@@ -23,3 +23,22 @@ function ShowClients(request, response) {
     });
 }
 exports.ShowClients = ShowClients;
+function ShowOne(request, response) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { id } = request.params;
+        const data = yield (0, ClienteController_1.GetOne)(parseInt(id));
+        if (data == null) {
+            return response.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send({
+                success: false,
+                messagge: "Fetched client",
+                data: data
+            });
+        }
+        return response.status(http_status_codes_1.StatusCodes.OK).send({
+            success: true,
+            messagge: "Fetched client",
+            data: data
+        });
+    });
+}
+exports.ShowOne = ShowOne;
