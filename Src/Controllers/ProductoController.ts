@@ -1,23 +1,58 @@
 import { DataType, Sequelize, where } from "sequelize";
 const { Productos } = require("../db.js");
-import {IProducto} from "../Interface/IProducto"; 
-export async function List() : Promise<IProducto[]>{
-    const list : IProducto[] = await Productos.findAll();
+import { IProducto } from "../Interface/IProducto";
+function UUIDValidator(idProd?: string): boolean {
+    if (idProd != undefined) return /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/i.test(idProd);
+    else return false;
+}
+export async function List(): Promise<IProducto[]> {
+    const list: IProducto[] = await Productos.findAll();
     return list;
 }
-export async function CreateOne(entity : IProducto) : Promise<IProducto>{
-    const save : IProducto= await Productos.create( entity);
+export async function CreateOne(entity: IProducto): Promise<IProducto> {
+    const save: IProducto = await Productos.create(entity);
     return save;
 }
-export async function destroy(id : string | any) : Promise<boolean> {
-    const product : IProducto = await Productos.findOne({where:{id:id}});
-    if(product == null){
-        return false;
+export async function destroy(idProd?: string): Promise<boolean> {
+    if (!UUIDValidator(idProd)) {
+        throw new Error("BAD REQUEST");
+    }
+    const product: IProducto = await Productos.findOne({ where: { id: idProd } });
+    if (product == null) {
+        throw new Error("NOT FOUND");
     }
     await Productos.destroy({
-        where:{
-            id:id
+        where: {
+            id: idProd
         }
     });
     return true;
+}
+export async function GetOneProduct(idProd?: string): Promise<IProducto> {
+    if (!UUIDValidator(idProd)) {
+        throw new Error("BAD REQUEST");
+    }
+    const product: IProducto = await Productos.findOne({ where: { id: idProd } });
+    if (product == null) {
+        throw new Error("NOT FOUND");
+    }
+    return product;
+}
+export async function UpdateOneProduct(producto: IProducto, idProd?: string): Promise<IProducto> {
+    if (!UUIDValidator(idProd)) {
+        throw new Error("BAD REQUEST");
+    }
+    const product: IProducto = await Productos.findOne({ where: { id: idProd } });
+    if (product == null) {
+        throw new Error("NOT FOUND");
+    }
+    await Productos.update(
+        producto,
+        {
+            where:
+            {
+                id: idProd
+            }
+        });
+    return product;
 }

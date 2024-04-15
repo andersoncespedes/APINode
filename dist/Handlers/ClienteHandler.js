@@ -28,10 +28,9 @@ function ShowOne(request, response) {
         const { id } = request.params;
         const data = yield (0, ClienteController_1.GetOne)(parseInt(id));
         if (data == null) {
-            return response.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send({
+            return response.status(http_status_codes_1.StatusCodes.NOT_FOUND).send({
                 success: false,
-                messagge: "Fetched client",
-                data: data
+                messagge: "Client Not Found",
             });
         }
         return response.status(http_status_codes_1.StatusCodes.OK).send({
