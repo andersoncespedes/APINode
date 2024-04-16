@@ -1,9 +1,21 @@
 import { StatusCodes } from "http-status-codes"
 import { Request, Response } from 'express';
-import { List, CreateOne, destroy, GetOneProduct, UpdateOneProduct } from "../Controllers/ProductoController";
+import { List, CreateOne, destroy, GetOneProduct, UpdateOneProduct, GetWithClients } from "../Controllers/ProductoController";
 import { IProducto } from "../Interface/IProducto";
 export async function Show(request: Request, response: Response): Promise<Response> {
     const list: IProducto[] = await List();
+    return response
+        .status(StatusCodes.OK)
+        .send(
+            {
+                success: true,
+                messagge: "Fetched Products",
+                data: list
+            }
+        );
+}
+export async function ShowWithClients(request: Request, response: Response): Promise<Response> {
+    const list: IProducto[] = await GetWithClients();
     return response
         .status(StatusCodes.OK)
         .send(
@@ -33,6 +45,7 @@ export async function Create(request: Request, response: Response): Promise<Resp
             }
         )
 }
+
 export async function GetOne(request: Request, response: Response): Promise<Response> {
     try {
         const { id } = request.params;

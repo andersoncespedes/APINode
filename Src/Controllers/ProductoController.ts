@@ -1,12 +1,12 @@
 import { DataType, Sequelize, where } from "sequelize";
-const { Productos } = require("../db.js");
-import { IProducto } from "../Interface/IProducto";
+const { Productos, Clientes } = require("../db.js");
+import { IProducto, ProductoDto } from "../Interface/IProducto";
 function UUIDValidator(idProd?: string): boolean {
     if (idProd != undefined) return /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/i.test(idProd);
     else return false;
 }
 export async function List(): Promise<IProducto[]> {
-    const list: IProducto[] = await Productos.findAll();
+    const list: IProducto[] = ProductoDto.lista(await Productos.findAll());
     return list;
 }
 export async function CreateOne(entity: IProducto): Promise<IProducto> {
@@ -17,7 +17,7 @@ export async function destroy(idProd?: string): Promise<boolean> {
     if (!UUIDValidator(idProd)) {
         throw new Error("BAD REQUEST");
     }
-    const product: IProducto = await Productos.findOne({ where: { id: idProd } });
+    const product: IProducto =  await Productos.findOne({ where: { id: idProd } });
     if (product == null) {
         throw new Error("NOT FOUND");
     }
@@ -32,7 +32,7 @@ export async function GetOneProduct(idProd?: string): Promise<IProducto> {
     if (!UUIDValidator(idProd)) {
         throw new Error("BAD REQUEST");
     }
-    const product: IProducto = await Productos.findOne({ where: { id: idProd } });
+    const product: ProductoDto = new ProductoDto(await Productos.findOne({ where: { id: idProd } }));
     if (product == null) {
         throw new Error("NOT FOUND");
     }
@@ -43,7 +43,7 @@ export async function UpdateOneProduct(producto: IProducto, idProd?: string): Pr
         throw new Error("BAD REQUEST");
     }
     const product: IProducto = await Productos.findOne({ where: { id: idProd } });
-    if (product == null) {
+    if (product) {
         throw new Error("NOT FOUND");
     }
     await Productos.update(
@@ -55,4 +55,12 @@ export async function UpdateOneProduct(producto: IProducto, idProd?: string): Pr
             }
         });
     return product;
+}
+export async function GetWithClients(): Promise<IProducto[]> {
+    const productos: IProducto[] = await Productos.findAll(
+        {
+            include: Clientes
+        }
+    )
+    return productos;
 }

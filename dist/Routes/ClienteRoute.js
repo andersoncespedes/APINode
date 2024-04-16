@@ -7,3 +7,6 @@ const ClienteRoute = (0, express_1.Router)();
 exports.ClienteRoute = ClienteRoute;
 ClienteRoute.get("/", ClienteHandler_1.ShowClients);
 ClienteRoute.get("/:id", ClienteHandler_1.ShowOne);
+ClienteRoute.post("/", ClienteHandler_1.Create);
+ClienteRoute.post("/prod/:id", ClienteHandler_1.CreateWithProd);
+ClienteRoute.delete("/:id", ClienteHandler_1.DeleteOne);

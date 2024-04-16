@@ -1,7 +1,7 @@
 {
   "type": "commonjs",
   "scripts": {
-    "start": "tsc && node dist/index.js"
+    "start": " tsc && node dist/index.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateOneProduct = exports.GetOneProduct = exports.destroy = exports.CreateOne = exports.List = void 0;
-const { Productos } = require("../db.js");
+exports.GetWithClients = exports.UpdateOneProduct = exports.GetOneProduct = exports.destroy = exports.CreateOne = exports.List = void 0;
+const { Productos, Clientes } = require("../db.js");
+const IProducto_1 = require("../Interface/IProducto");
 function UUIDValidator(idProd) {
     if (idProd != undefined)
         return /[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}/i.test(idProd);
@@ -19,7 +20,7 @@ function UUIDValidator(idProd) {
 }
 function List() {
     return __awaiter(this, void 0, void 0, function* () {
-        const list = yield Productos.findAll();
+        const list = IProducto_1.ProductoDto.lista(yield Productos.findAll());
         return list;
     });
 }
@@ -54,7 +55,7 @@ function GetOneProduct(idProd) {
         if (!UUIDValidator(idProd)) {
             throw new Error("BAD REQUEST");
         }
-        const product = yield Productos.findOne({ where: { id: idProd } });
+        const product = new IProducto_1.ProductoDto(yield Productos.findOne({ where: { id: idProd } }));
         if (product == null) {
             throw new Error("NOT FOUND");
         }
@@ -68,7 +69,7 @@ function UpdateOneProduct(producto, idProd) {
             throw new Error("BAD REQUEST");
         }
         const product = yield Productos.findOne({ where: { id: idProd } });
-        if (product == null) {
+        if (product) {
             throw new Error("NOT FOUND");
         }
         yield Productos.update(producto, {
@@ -80,3 +81,12 @@ function UpdateOneProduct(producto, idProd) {
     });
 }
 exports.UpdateOneProduct = UpdateOneProduct;
+function GetWithClients() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const productos = yield Productos.findAll({
+            include: Clientes
+        });
+        return productos;
+    });
+}
+exports.GetWithClients = GetWithClients;

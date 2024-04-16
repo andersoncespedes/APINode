@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateOne = exports.DeleteOne = exports.GetOne = exports.Create = exports.Show = void 0;
+exports.UpdateOne = exports.DeleteOne = exports.GetOne = exports.Create = exports.ShowWithClients = exports.Show = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const ProductoController_1 = require("../Controllers/ProductoController");
 function Show(request, response) {
@@ -25,6 +25,19 @@ function Show(request, response) {
     });
 }
 exports.Show = Show;
+function ShowWithClients(request, response) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const list = yield (0, ProductoController_1.GetWithClients)();
+        return response
+            .status(http_status_codes_1.StatusCodes.OK)
+            .send({
+            success: true,
+            messagge: "Fetched Products",
+            data: list
+        });
+    });
+}
+exports.ShowWithClients = ShowWithClients;
 function Create(request, response) {
     return __awaiter(this, void 0, void 0, function* () {
         const { nombre, codigo, precio } = request.body;
