@@ -9,37 +9,38 @@ export async function LoginUser(reqest: Request, response: Response): Promise<Re
     const { username, password } = reqest.body;
     console.log(reqest.body.username);
     const respuesta = await ExistsUser(username, password);
-    const user = { username }; // Ejemplo de usuario autenticado
-    const token = jwt.sign(user, secretKey, { expiresIn });
-    return response.json({ token });
+    console.log(respuesta)
+    if (respuesta) {
+        const user = { username };
+        const token = jwt.sign(user, secretKey, { expiresIn });
+        return response.json({ token });
+    }
+    return response.status(StatusCodes.BAD_REQUEST).send({
+        success: false,
+        messagge: "Bad Request",
+        data: null
+    })
 }
 export async function RegisterUser(reqest: Request, response: Response): Promise<Response> {
-        const { username, email, password, passwordConfirmation } = reqest.body;
-        if (password != passwordConfirmation) {
-            return response.status(StatusCodes.BAD_REQUEST).send(
-                {
-                    success: false,
-                    messagge: "Bad Request",
-                    data: null
-                }
-            )
-        } else {
-            const valor: boolean = await CreateOne(username, email, password);
-
-            return response.status(StatusCodes.OK).send(
-                {
-                    success: false,
-                    messagge: "Bad Request",
-                    data: null
-                }
-            );
-        }
-
+    const { username, email, password, passwordConfirmation } = reqest.body;
+    if (password != passwordConfirmation) {
         return response.status(StatusCodes.BAD_REQUEST).send(
             {
                 success: false,
                 messagge: "Bad Request",
                 data: null
-            });
+            }
+        )
+    } else {
+        const valor: boolean = await CreateOne(username, email, password);
+
+        return response.status(StatusCodes.OK).send(
+            {
+                success: false,
+                messagge: "Bad Request",
+                data: null
+            }
+        );
     }
+}
 

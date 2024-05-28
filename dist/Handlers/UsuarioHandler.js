@@ -19,9 +19,17 @@ function LoginUser(reqest, response) {
         const { username, password } = reqest.body;
         console.log(reqest.body.username);
         const respuesta = yield (0, UsuarioController_js_1.ExistsUser)(username, password);
-        const user = { username }; // Ejemplo de usuario autenticado
-        const token = jwt.sign(user, secretKey, { expiresIn });
-        return response.json({ token });
+        console.log(respuesta);
+        if (respuesta) {
+            const user = { username };
+            const token = jwt.sign(user, secretKey, { expiresIn });
+            return response.json({ token });
+        }
+        return response.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send({
+            success: false,
+            messagge: "Bad Request",
+            data: null
+        });
     });
 }
 exports.LoginUser = LoginUser;
@@ -43,11 +51,6 @@ function RegisterUser(reqest, response) {
                 data: null
             });
         }
-        return response.status(http_status_codes_1.StatusCodes.BAD_REQUEST).send({
-            success: false,
-            messagge: "Bad Request",
-            data: null
-        });
     });
 }
 exports.RegisterUser = RegisterUser;

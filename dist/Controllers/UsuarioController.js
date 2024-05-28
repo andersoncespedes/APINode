@@ -11,24 +11,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateOne = exports.ExistsUser = void 0;
 const { Usuario } = require("../db.js");
+const bcrypt = require('bcrypt');
 function ExistsUser(username, password) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(username);
-        console.log(password);
+        let data = yield Usuario.findOne({ Where: { nombre: username } });
+        if (data != null) {
+            let al = yield bcrypt.compare(password, data.password);
+            return al;
+        }
+        return false;
     });
 }
 exports.ExistsUser = ExistsUser;
 function CreateOne(username, email, password) {
     return __awaiter(this, void 0, void 0, function* () {
         const { count, rows } = yield Usuario.findAndCountAll({ where: { nombre: username } });
-        console.log(count);
-        if (count == 0) {
-            const user = yield Usuario.create({
-                nombre: username,
-                correo: email,
-                password: password
-            });
-        }
+        bcrypt.hash(password, 10, (err, hash) => __awaiter(this, void 0, void 0, function* () {
+            if (err) {
+                console.error('Error al hashear la contraseña:', err);
+                return;
+            }
+            console.log(`La contraseña hasheada es: ${hash}`);
+            if (count == 0) {
+                const user = yield Usuario.create({
+                    nombre: username,
+                    correo: email,
+                    password: hash
+                });
+            }
+        }));
         return true;
     });
 }
